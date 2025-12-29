@@ -1,0 +1,15 @@
+import 'package:flutter/material.dart';
+
+class VideosContent extends StatefulWidget {
+  const VideosContent({super.key});
+
+  @override
+  State<VideosContent> createState() => _VideosContentState();
+}
+
+class _VideosContentState extends State<VideosContent> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
