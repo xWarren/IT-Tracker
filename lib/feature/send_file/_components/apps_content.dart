@@ -7,14 +7,9 @@ import '../../../core/resources/keys.dart';
 
 class AppsContent extends StatefulWidget {
 
-  const AppsContent({
-    super.key, 
-    required this.appCallBack,
-    required this.scrollController
-  });
+  const AppsContent({super.key, required this.appCallBack});
 
   final Function(bool isSelected) appCallBack;
-  final ScrollController scrollController;
 
   @override
   State<AppsContent> createState() => _AppsContentState();
@@ -81,7 +76,6 @@ class _AppsContentState extends State<AppsContent> {
           ),
           Expanded(
             child: GridView.builder(
-              controller: widget.scrollController,
               itemCount: _apps.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,

@@ -28,49 +28,11 @@ class _SendFilePageState extends State<SendFilePage> with SingleTickerProviderSt
   bool _isAppSelected = false;
   bool _isPhotoSelected = false;
 
-  final _appsScroll = ScrollController();
-  final _filesScroll = ScrollController();
-  final _photosScroll = ScrollController();
-  final _videosScroll = ScrollController();
-
   @override
   void initState() {
     super.initState();
     _tabController  = TabController(length: 4, vsync: this);
-    _tabController?.addListener(() {
-      if (!_tabController!.indexIsChanging) {
-        _scrollToTop(_tabController!.index);
-
-        setState(() {
-          _isAppSelected = _tabController!.index == 0 ? _isAppSelected : false;
-          _isPhotoSelected = _tabController!.index == 3 ? _isPhotoSelected : false;
-        });
-      }
-    });
   }
-
-  void _scrollToTop(int index) {
-    final controller = switch (index) {
-      0 => _appsScroll,
-      1 => _filesScroll,
-      2 => _photosScroll,
-      3 => _videosScroll,
-      _ => null,
-    };
-
-    if (controller == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!controller.hasClients) return;
-
-      controller.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
-  }
-
 
   void _setAppCallBack(bool value) => setState(() => _isAppSelected = value);
   void _setPhotosCallBack(bool value) => setState(() => _isPhotoSelected = value);
@@ -93,10 +55,6 @@ class _SendFilePageState extends State<SendFilePage> with SingleTickerProviderSt
   @override
   void dispose() {
     _tabController?.dispose();
-    _appsScroll.dispose();
-    _filesScroll.dispose();
-    _photosScroll.dispose();
-    _videosScroll.dispose();
     super.dispose();
   }
 
@@ -124,16 +82,10 @@ class _SendFilePageState extends State<SendFilePage> with SingleTickerProviderSt
               TabBarView(
                 controller: _tabController,
                 children: [
-                  AppsContent(
-                    appCallBack: _setAppCallBack,
-                    scrollController: _appsScroll,
-                  ),
-                  FilesContent(scrollController: _filesScroll),
-                  VideosContent(scrollController: _videosScroll),
-                  PhotosContent(
-                    photosCallBack: _setPhotosCallBack,
-                    scrollController: _photosScroll,
-                  )
+                  AppsContent(appCallBack: _setAppCallBack),
+                  const FilesContent(),
+                  const VideosContent(),
+                  PhotosContent(photosCallBack: _setPhotosCallBack)
                 ],
               ),
               Container(

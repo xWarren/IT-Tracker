@@ -8,14 +8,9 @@ import '../../../core/resources/colors.dart';
 
 class PhotosContent extends StatefulWidget {
 
-  const PhotosContent({
-    super.key, 
-    required this.photosCallBack,
-    required this.scrollController
-  });
+  const PhotosContent({super.key, required this.photosCallBack});
 
   final Function(bool isSelected) photosCallBack;
-  final ScrollController scrollController;
 
   @override
   State<PhotosContent> createState() => _PhotosContentState();
@@ -101,7 +96,6 @@ class _PhotosContentState extends State<PhotosContent> {
     return Container(
       margin: const EdgeInsets.only(bottom: 110.0),
       child: GridView.builder(
-        controller: widget.scrollController,
         padding: const EdgeInsets.all(8),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
