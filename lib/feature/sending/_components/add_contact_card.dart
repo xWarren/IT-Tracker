@@ -65,9 +65,9 @@ class AddContactCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: CustomColors.black,
+                        color: CustomColors.gray,
                         fontSize: 14.0,
-                        fontWeight: FontWeight.w600
+                        fontWeight: FontWeight.w400
                       ),
                     )
                   ],
