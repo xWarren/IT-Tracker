@@ -7,6 +7,7 @@ import '../../core/common/common_text_field.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
+import '../../core/utils/input_formatters.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -73,7 +74,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: Dimensions.spacingSmall),
             CommonTextField(
-              controller: _nameController,
+              controller: _phoneNumberController,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.phone,
+              inputFormatters: InputFormatters.contactPhone,
               helperText: "Phone Number",
               helperTextStyle: const TextStyle(
                 color: CustomColors.black,

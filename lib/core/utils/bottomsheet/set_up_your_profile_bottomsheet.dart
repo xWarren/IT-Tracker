@@ -9,6 +9,7 @@ import '../../common/common_text_field.dart';
 import '../../resources/colors.dart';
 import '../../resources/dimensions.dart';
 import '../context_extension.dart';
+import '../input_formatters.dart';
 
 class SetUpYourProfileBottomsheet extends StatefulWidget {
   const SetUpYourProfileBottomsheet({super.key});
@@ -135,6 +136,7 @@ class _SetUpYourProfileBottomsheetState extends State<SetUpYourProfileBottomshee
             CommonTextField(
               controller: _nameController,
               helperText: "Phone Number",
+              inputFormatters: InputFormatters.contactPhone,
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.phone,
               helperTextStyle: const TextStyle(
