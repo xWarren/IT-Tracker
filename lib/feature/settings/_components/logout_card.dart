@@ -5,6 +5,7 @@ import '../../../core/common/common_image.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
+import '../../../core/utils/context_extension.dart';
 
 class LogoutCard extends StatelessWidget {
   const LogoutCard({super.key});
@@ -14,7 +15,7 @@ class LogoutCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(Dimensions.paddingMedium),
       child: CommonElevatedButton(
-        onButtonPressed: () {},
+        onButtonPressed: context.showStatus,
         backgroundColor: Colors.white,
         padding: const EdgeInsets.all(Dimensions.paddingMedium),
         borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusExtraSmall),

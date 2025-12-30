@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/common/common_elevated_button.dart';
+import '../../../core/common/common_icon_button.dart';
 import '../../../core/common/common_image.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
@@ -11,23 +11,18 @@ class UserItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonElevatedButton(
-      onButtonPressed: () {},
-      backgroundColor: Colors.white,
-      borderRadius: BorderRadius.zero,
-      padding: const EdgeInsets.symmetric(
-        horizontal: Dimensions.paddingMedium,
-        vertical: Dimensions.paddingSmall
-      ),
-      custom: const Row(
+    return Container(
+      margin: const EdgeInsets.all(Dimensions.marginMedium),
+      child: Row(
+        spacing: Dimensions.spacingSmall,
         children: [
-          CommonImage(
+          const CommonImage(
             path: Assets.logo2,
             height: 36.0,
             width: 36.0,
             fit: BoxFit.fill,
           ),
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,12 +37,20 @@ class UserItem extends StatelessWidget {
                 Text(
                   "zenki@gmail.com",
                   style: TextStyle(
-                      color: CustomColors.black,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400
+                    color: CustomColors.black,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400
                   ),
                 )
               ],
+            ),
+          ),
+          CommonIconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.add,
+              size: 24.0,
+              color: CustomColors.white,
             ),
           )
         ],

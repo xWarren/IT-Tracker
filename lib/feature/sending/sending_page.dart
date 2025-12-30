@@ -137,7 +137,7 @@ class _SendingPageState extends State<SendingPage> {
             ),
             const SizedBox(height: Dimensions.spacingMedium),
             const AddContactCard(),
-            const SizedBox(height: Dimensions.spacingExtraLarge),
+            const SizedBox(height: 100.0),
           ],
         ),
       ),
@@ -149,7 +149,7 @@ class _SendingPageState extends State<SendingPage> {
           vertical: Dimensions.marginLarge
         ),
         child: CommonElevatedButton(
-          onButtonPressed: () {},
+          onButtonPressed: (progress * 100).toInt() == 100 ? () {} : null ,
           text: "Continue",
           borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusLarge),
         ),

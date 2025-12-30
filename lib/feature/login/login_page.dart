@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,125 +46,132 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: context.dismissKeyboard,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: BlocConsumer<LoginBloc, LoginState>(
-          listener: (context, state) {
-            if (state is LoadedState) {
-              context.go(AppRoutes.home);
-            }
-          },
-          builder: (context, state) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CommonImage(
-                          path: Assets.logo,
-                          height: 96.0,
-                          width: 96.0,
-                        ),
-                        const SizedBox(height: Dimensions.spacingSmall),
-                        const Text(
-                          "Welcome Back!",
-                          style: TextStyle(
-                            color: CustomColors.primary,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.w500
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.light,
+          statusBarColor: CustomColors.white,
+          statusBarIconBrightness: Brightness.dark
+        ),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: BlocConsumer<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state is LoadedState) {
+                context.go(AppRoutes.home);
+              }
+            },
+            builder: (context, state) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CommonImage(
+                            path: Assets.logo,
+                            height: 96.0,
+                            width: 96.0,
                           ),
-                        ),
-                        const SizedBox(height: Dimensions.spacingMedium),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
-                          child: CommonTextField(
-                            controller: _emailController,
-                            helperText: "Email",
-                            helperTextStyle: const TextStyle(
-                              color: CustomColors.black,
-                              fontSize: 14.0,
+                          const SizedBox(height: Dimensions.spacingSmall),
+                          const Text(
+                            "Welcome Back!",
+                            style: TextStyle(
+                              color: CustomColors.primary,
+                              fontSize: 24.0,
                               fontWeight: FontWeight.w500
                             ),
-                            helperPadding: EdgeInsets.zero,
-                            hintText: "test@gmail.com",
-                            hintTextStyle: const TextStyle(
-                              color: CustomColors.gray,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400
-                            ),
-                            inputBorder: const UnderlineInputBorder(borderSide: BorderSide(color: CustomColors.gray)),
                           ),
-                        ),
-                        const SizedBox(height: Dimensions.spacingSmall),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
-                          child: CommonTextField(
-                            controller: _passwordController,
-                            helperText: "Password",
-                            helperTextStyle: const TextStyle(
-                              color: CustomColors.black,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500
-                            ),
-                            helperPadding: EdgeInsets.zero,
-                            hintText: "*******",
-                            hintTextStyle: const TextStyle(
-                              color: CustomColors.gray,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400
-                            ),
-                            inputBorder: const UnderlineInputBorder(borderSide: BorderSide(color: CustomColors.gray)),
-                            hasShowHideTextIcon: true,
-                            maxLines: 1,
-                          ),
-                        ),
-                        const SizedBox(height: Dimensions.spacingExtraLarge),
-                        Container(
-                          height: 50.0,
-                          width: context.screenWidth,
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
-                          child: CommonElevatedButton(
-                            onButtonPressed: _login,
-                            text: "Login",
-                          ),
-                        ),
-                        const SizedBox(height: Dimensions.spacingExtraLarge),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: Dimensions.spacingExtraSmall,
-                          children: [
-                            const Text(
-                              "Create an account?",
-                              style: TextStyle(
+                          const SizedBox(height: Dimensions.spacingMedium),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
+                            child: CommonTextField(
+                              controller: _emailController,
+                              helperText: "Email",
+                              helperTextStyle: const TextStyle(
                                 color: CustomColors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500
+                              ),
+                              helperPadding: EdgeInsets.zero,
+                              hintText: "test@gmail.com",
+                              hintTextStyle: const TextStyle(
+                                color: CustomColors.gray,
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w400
                               ),
+                              inputBorder: const UnderlineInputBorder(borderSide: BorderSide(color: CustomColors.gray)),
                             ),
-                            GestureDetector(
-                              onTap: () => context.push(AppRoutes.register),
-                              child: const Text(
-                                "Register",
+                          ),
+                          const SizedBox(height: Dimensions.spacingSmall),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
+                            child: CommonTextField(
+                              controller: _passwordController,
+                              helperText: "Password",
+                              helperTextStyle: const TextStyle(
+                                color: CustomColors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500
+                              ),
+                              helperPadding: EdgeInsets.zero,
+                              hintText: "*******",
+                              hintTextStyle: const TextStyle(
+                                color: CustomColors.gray,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400
+                              ),
+                              inputBorder: const UnderlineInputBorder(borderSide: BorderSide(color: CustomColors.gray)),
+                              hasShowHideTextIcon: true,
+                              maxLines: 1,
+                            ),
+                          ),
+                          const SizedBox(height: Dimensions.spacingExtraLarge),
+                          Container(
+                            height: 50.0,
+                            width: context.screenWidth,
+                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
+                            child: CommonElevatedButton(
+                              onButtonPressed: _login,
+                              text: "Login",
+                            ),
+                          ),
+                          const SizedBox(height: Dimensions.spacingExtraLarge),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            spacing: Dimensions.spacingExtraSmall,
+                            children: [
+                              const Text(
+                                "Create an account?",
                                 style: TextStyle(
-                                  color: CustomColors.primary,
+                                  color: CustomColors.black,
                                   fontSize: 14.0,
-                                  fontWeight: FontWeight.w600
+                                  fontWeight: FontWeight.w400
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: Dimensions.spacingExtraLarge),
-                      ],
+                              GestureDetector(
+                                onTap: () => context.push(AppRoutes.register),
+                                child: const Text(
+                                  "Register",
+                                  style: TextStyle(
+                                    color: CustomColors.primary,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: Dimensions.spacingExtraLarge),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
-            );
-          }
+                  );
+                }
+              );
+            }
+          ),
         ),
       ),
     );

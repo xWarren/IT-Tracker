@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/common/common_elevated_button.dart';
-import '../../../core/common/common_icon_button.dart';
 import '../../../core/common/common_image.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
@@ -74,20 +73,23 @@ class AddContactCard extends StatelessWidget {
                 ),
               ),
               CommonElevatedButton(
-                onButtonPressed: () {},
+                onButtonPressed: () {
+                  context.showAddContact(
+                    profileImage: Assets.logo2, 
+                    fullName: "Android V2", 
+                    email: "androidv2@gmail.com"
+                  );
+                },
                 padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSmall),
                 borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusSmall),
-                custom: Row(
+                custom: const Row(
                   children: [
-                    CommonIconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.add,
-                        size: 24.0,
-                        color: CustomColors.white,
-                      ),
+                    Icon(
+                      Icons.add,
+                      size: 24.0,
+                      color: CustomColors.white,
                     ),
-                    const Text(
+                    Text(
                       "Add Contact",
                       style: TextStyle(
                         color: CustomColors.white,

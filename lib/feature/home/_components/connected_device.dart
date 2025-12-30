@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/common/common_icon_button.dart';
+import '../../../core/common/common_image.dart';
+import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
+import '../../../core/utils/context_extension.dart';
 
 class ConnectedDevice extends StatelessWidget {
   const ConnectedDevice({super.key});
@@ -24,13 +28,39 @@ class ConnectedDevice extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Connected Device",
-            style: TextStyle(
-              color: CustomColors.black,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w600
-            ),
+          Row(
+            spacing: Dimensions.spacingSmall,
+            children: [
+              const Text(
+                "Connected Device",
+                style: TextStyle(
+                  color: CustomColors.black,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600
+                ),
+              ),
+              const Spacer(),
+              CommonIconButton(
+                onPressed: () {},
+                rippleColor: CustomColors.secondary.withValues(alpha: 0.2),
+                backgroundColor: CustomColors.secondary.withValues(alpha: 0.5),
+                icon: const CommonImage(
+                  path: Assets.microphone,
+                  height: 24.0,
+                  width: 24.0,
+                )
+              ),
+              CommonIconButton(
+                onPressed: context.showSetRangeLimit,
+                rippleColor: CustomColors.secondary.withValues(alpha: 0.2),
+                backgroundColor: CustomColors.secondary.withValues(alpha: 0.5),
+                icon: const CommonImage(
+                  path: Assets.ruler,
+                  height: 24.0,
+                  width: 24.0,
+                )
+              )
+            ],
           ),
           const SizedBox(height: Dimensions.spacingMedium),
           Row(

@@ -26,7 +26,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final List<Map<String, String>> _onboardings = [
     {
       "image": Assets.download,
-      "title": "Welcome to IT Tracker",
+      "title": "Welcome to I Tracker",
       "description": "Easily connect with nearby devices and transfer files faster than ever. Tap Send or Receive to get started!"
     },
     {
@@ -92,40 +92,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   },
                 ),
               ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Row(
-                        mainAxisAlignment: _currentIndex == 0 ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
-                        children: [
-                          if(_currentIndex != 0)
-                            _buildArrowButton(
-                              backgroundColor: CustomColors.white,
-                              borderSideColor: CustomColors.primary,
-                              onPressed: backPage,
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                color: CustomColors.primary
-                              ),
-                            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Dimensions.paddingMedium,
+                  vertical: Dimensions.paddingExtraLarge
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    Row(
+                      mainAxisAlignment: _currentIndex == 0 ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
+                      children: [
+                        if(_currentIndex != 0)
                           _buildArrowButton(
-                            backgroundColor: CustomColors.primary,
+                            backgroundColor: CustomColors.white,
                             borderSideColor: CustomColors.primary,
-                            onPressed: nextPage,
+                            onPressed: backPage,
                             icon: const Icon(
-                              Icons.arrow_forward,
-                              color: CustomColors.white
+                              Icons.arrow_back,
+                              color: CustomColors.primary
                             ),
-                          )
-                        ],
-                      ),
-                      _buildCircle()
-                    ],
-                  ),
+                          ),
+                        _buildArrowButton(
+                          backgroundColor: CustomColors.primary,
+                          borderSideColor: CustomColors.primary,
+                          onPressed: nextPage,
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            color: CustomColors.white
+                          ),
+                        )
+                      ],
+                    ),
+                    _buildCircle()
+                  ],
                 ),
               )
             ],

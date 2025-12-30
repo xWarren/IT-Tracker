@@ -54,7 +54,7 @@ class OnboardingItem extends StatelessWidget {
   }
 
   List<TextSpan> _buildStyledTitle(String title) {
-    const highlights = ['IT', 'Tracker', 'Conversation', 'Alerts'];
+    const highlights = ['I', 'Tracker', 'Conversation', 'Alerts'];
     return title.split(' ').map((word) {
       final isHighlighted = highlights.contains(word);
       return TextSpan(

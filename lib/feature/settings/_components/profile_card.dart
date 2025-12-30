@@ -6,7 +6,9 @@ import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key});
+  const ProfileCard({super.key, required this.deviceName});
+
+  final String deviceName;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,10 @@ class ProfileCard extends StatelessWidget {
           width: 0.5,
         ),
       ),
-      child: const Row(
+      child: Row(
         spacing: Dimensions.spacingMedium,
         children: [
-          CommonImage(
+          const CommonImage(
             path: Assets.logo2,
             height: 68.0,
             width: 68.0,
@@ -37,7 +39,7 @@ class ProfileCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Android V2",
                   style: TextStyle(
                     color: CustomColors.black,
@@ -46,8 +48,10 @@ class ProfileCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Device Name: Samsung J8",
-                  style: TextStyle(
+                  "Device Name: $deviceName",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
                     color: CustomColors.black,
                     fontSize: 14.0,
                     fontWeight: FontWeight.w400

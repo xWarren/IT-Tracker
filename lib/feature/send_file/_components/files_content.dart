@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class FilesContent extends StatefulWidget {
-  const FilesContent({super.key});
+
+  const FilesContent({super.key, required this.scrollController});
+
+  final ScrollController scrollController;
 
   @override
   State<FilesContent> createState() => _FilesContentState();
@@ -28,6 +31,7 @@ class _FilesContentState extends State<FilesContent> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: widget.scrollController,
       shrinkWrap: true,
       itemCount: documents.length,
       itemBuilder: (context, index) {

@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        title: 'IT Tracker',
+        title: 'I Tracker',
         theme: AppTheme.lightTheme, 
         routerConfig: AppRouter.router
       ),

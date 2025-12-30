@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/common/common_elevated_button.dart';
 import '../../../core/common/common_image.dart';
+import '../../../core/resources/app_routes.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
@@ -31,7 +33,7 @@ class GeneralCard extends StatelessWidget {
         children: [
           const SizedBox(height: Dimensions.spacingSmall),
           _buildPage(
-            onButtonPressed: () {}, 
+            onButtonPressed: () => context.push(AppRoutes.editProfile), 
             image: Assets.userEdit, 
             title: "Edit Profile"
           ),

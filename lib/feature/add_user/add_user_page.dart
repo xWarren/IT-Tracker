@@ -92,7 +92,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 shrinkWrap: true,
                 itemCount: 120,
                 itemBuilder: (context, index) {
-                  return UserItem();
+                  return const UserItem();
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(

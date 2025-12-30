@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'bottomsheet/add_contact_bottomsheet.dart';
 import 'bottomsheet/set_up_your_profile_bottomsheet.dart';
+import 'bottomsheet/status_bottomsheet.dart';
+import 'dialog/select_avatar_dialog.dart';
+import 'dialog/set_range_limit_dialog.dart';
 
 extension ContextExt on BuildContext {
 
@@ -44,6 +50,50 @@ extension ContextExt on BuildContext {
       enableDrag: false,
       builder: (_) {
         return const SetUpYourProfileBottomsheet();
+      }
+    );
+  }
+
+  void showAddContact({
+    required String profileImage, 
+    required String fullName,
+    required String email
+  }) {
+    showModalBottomSheet(
+      context: this, 
+      builder: (_) {
+        return AddContactBottomsheet(
+          profileImage: profileImage,
+          fullName: fullName,
+          email: email
+        );
+      }
+    );
+  }
+
+  void showStatus() {
+    showModalBottomSheet(
+      context: this,
+      builder: (_) {
+        return const StatusBottomsheet();
+      }
+    );
+  }
+
+  void showSelectAvatar(Function(File? file) onSelectedCallBack) {
+    showDialog(
+      context: this,
+      builder: (_) {
+        return SelectAvatarDialog(onSelectedCallBack: onSelectedCallBack);
+      }
+    );
+  }
+
+  void showSetRangeLimit() {
+    showDialog(
+      context: this,
+      builder: (_) {
+        return const SetRangeLimitDialog();
       }
     );
   }

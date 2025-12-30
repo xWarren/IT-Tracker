@@ -8,7 +8,6 @@ import '../../core/resources/assets.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
-import '../chat/_components/messages_item.dart';
 
 class ConversationPage extends StatefulWidget {
   const ConversationPage({super.key});
@@ -79,7 +78,7 @@ class _ConversationPageState extends State<ConversationPage> {
           ListView.builder(
             itemCount: 5,
             itemBuilder: (context, index) {
-              return Text('hello');
+              return const Text('hello');
             },
           ),
           Container(

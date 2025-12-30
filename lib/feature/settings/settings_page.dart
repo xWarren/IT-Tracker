@@ -6,6 +6,7 @@ import '../../core/common/common_icon_button.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
+import '../../core/utils/device_info_util.dart';
 import '_components/general_card.dart';
 import '_components/logout_card.dart';
 import '_components/profile_card.dart';
@@ -18,6 +19,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
+  String? deviceName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDeviceInfo();
+  }
+
+  Future<void> _loadDeviceInfo() async {
+    final name = await DeviceInfoUtil.getDeviceName();
+    setState(() {
+      deviceName = name;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -32,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
           slivers: [
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 200 + 100 + (4 * 216),
+                height: 200 + 100 + (4 * 100),
                 child: Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.topCenter,
@@ -73,16 +90,24 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       )
                     ),
-                    const Positioned(
+                    Positioned(
                       top: 90,
                       left: 0,
                       right: 0,
                       child: Column(
                         spacing: Dimensions.spacingMedium,
                         children: [
-                          ProfileCard(),
-                          GeneralCard(),
-                          LogoutCard()
+                          ProfileCard(deviceName: deviceName ?? ""),
+                          const GeneralCard(),
+                          const LogoutCard(),
+                          const Text(
+                            "Version 1.0.0",
+                            style: TextStyle(
+                              color: CustomColors.black,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w400
+                            ),
+                          )
                         ]
                       ),
                     ),
