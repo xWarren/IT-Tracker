@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/common/common_elevated_button.dart';
 import '../../../core/common/common_image.dart';
+import '../../../core/cubit/connectivity_cubit.dart';
 import '../../../core/resources/app_routes.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
@@ -14,47 +16,57 @@ class GeneralCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: context.screenWidth,
-      margin: const EdgeInsets.symmetric(horizontal: Dimensions.marginMedium),
-      decoration: BoxDecoration(
-        color: CustomColors.white,
-        borderRadius: BorderRadius.circular(
-          Dimensions.radiusExtraSmall,
-        ),
-        border: Border.all(
-          color: CustomColors.gray,
-          width: 0.5,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: Dimensions.spacingMedium,
-        children: [
-          const SizedBox(height: Dimensions.spacingSmall),
-          _buildPage(
-            onButtonPressed: () => context.push(AppRoutes.editProfile), 
-            image: Assets.userEdit, 
-            title: "Edit Profile"
+    return BlocBuilder<ConnectivityCubit, ConnectivityState>(
+      builder: (context, state) {
+        final hasInternet = state is ConnectivityLoaded && state.isConnected;
+
+        return Container(
+          width: context.screenWidth,
+          margin: const EdgeInsets.symmetric(horizontal: Dimensions.marginMedium),
+          decoration: BoxDecoration(
+            color: CustomColors.white,
+            borderRadius: BorderRadius.circular(
+              Dimensions.radiusExtraSmall,
+            ),
+            border: Border.all(
+              color: CustomColors.gray,
+              width: 0.5,
+            ),
           ),
-          _buildPage(
-            onButtonPressed: () {}, 
-            image: Assets.clock, 
-            title: "History"
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: Dimensions.spacingMedium,
+            children: [
+              const SizedBox(height: Dimensions.spacingSmall),
+              _buildPage(
+                onButtonPressed: () => context.push(AppRoutes.editProfile), 
+                image: Assets.userEdit, 
+                title: "Edit Profile",
+                hasInternet: hasInternet
+              ),
+              _buildPage(
+                onButtonPressed: () {}, 
+                image: Assets.clock, 
+                title: "History",
+                hasInternet: hasInternet
+              ),
+              _buildPage(
+                onButtonPressed: () {}, 
+                image: Assets.notification, 
+                title: "Notifications",
+                hasInternet: hasInternet
+              ),
+              _buildPage(
+                onButtonPressed: () {}, 
+                image: Assets.about, 
+                title: "About App",
+                hasInternet: hasInternet
+              ),
+              const SizedBox(height: Dimensions.spacingSmall),
+            ],
           ),
-          _buildPage(
-            onButtonPressed: () {}, 
-            image: Assets.notification, 
-            title: "Notifications"
-          ),
-          _buildPage(
-            onButtonPressed: () {}, 
-            image: Assets.about, 
-            title: "About App"
-          ),
-          const SizedBox(height: Dimensions.spacingSmall),
-        ],
-      ),
+        );
+      }
     );
   }
 
@@ -62,9 +74,11 @@ class GeneralCard extends StatelessWidget {
     required VoidCallback onButtonPressed,
     required String image,
     required String title,
+    required bool hasInternet
   }) {
     return CommonElevatedButton(
-      onButtonPressed: onButtonPressed,
+      onButtonPressed: hasInternet ? onButtonPressed : () {},
+      overlayColor: hasInternet ? CustomColors.primary : Colors.transparent,
       backgroundColor: Colors.transparent,
       padding: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,

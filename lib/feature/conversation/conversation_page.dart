@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/common/common_appbar.dart';
 import '../../core/common/common_icon_button.dart';
 import '../../core/common/common_image.dart';
+import '../../core/common/common_state.dart';
 import '../../core/common/common_text_field.dart';
+import '../../core/cubit/connectivity_cubit.dart';
 import '../../core/resources/assets.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
@@ -36,98 +39,107 @@ class _ConversationPageState extends State<ConversationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CommonAppBar(
-        titleWidget: const Row(
-          spacing: Dimensions.spacingSmall,
-          children: [
-            CommonImage(
-              path: Assets.logo2,
-              height: 36.0,
-              width: 36.0,
-            ),
-            Text(
-              "Conversation",
-              style: TextStyle(
-                color: CustomColors.white,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500
-              ),
-            )
-          ],
-        ),
-        widget: [
-          Padding(
-            padding: const EdgeInsets.only(right: Dimensions.paddingMedium),
-            child: CommonIconButton(
-              onPressed: () {},
-              rippleColor: Colors.transparent,
-              icon: const Icon(
-                Icons.phone,
-                size: 24.0,
-                color: CustomColors.white,
-              ),
-            ),
-          )
-        ],
-      ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        clipBehavior: Clip.none,
-        children: [
-          ListView.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return const Text('hello');
-            },
-          ),
-          Container(
-            height: 60.0,
-            margin: const EdgeInsets.symmetric(vertical: Dimensions.marginMedium),
-            width: context.screenWidth,
-            child: Row(
-              spacing: Dimensions.spacingMedium,
+    return BlocBuilder<ConnectivityCubit, ConnectivityState>(
+      builder: (context, state) {
+        final hasInternet = state is ConnectivityLoaded && state.isConnected;
+        
+        return Scaffold(
+          appBar: CommonAppBar(
+            titleWidget: const Row(
+              spacing: Dimensions.spacingSmall,
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: Dimensions.paddingMedium),
-                    child: CommonTextField(
-                      controller: _messageController,
-                      onChanged: _onChanged,
-                      fillColor: CustomColors.white,
-                      filled: true,
-                      inputBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
-                        borderSide: const BorderSide(color: CustomColors.gray)
-                      ),
-                      hintText: "Type a message...",
-                      hintTextStyle: const TextStyle(
-                        color: CustomColors.gray,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400
-                      ),
-                    ),
-                  ),
+                CommonImage(
+                  path: Assets.logo2,
+                  height: 36.0,
+                  width: 36.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: Dimensions.paddingMedium),
-                  child: CommonIconButton(
-                    onPressed: _messageController.text.isEmpty ? null : _send,
-                    backgroundColor: _messageController.text.isEmpty ? CustomColors.primary.withValues(alpha: 0.5) : null,
-                    padding: EdgeInsets.zero,
-                    iconSize: 54.0,
-                    icon: const Icon(
-                      Icons.send,
-                      color: CustomColors.white,
-                      size: 20.0,
-                    ),
+                Text(
+                  "Conversation",
+                  style: TextStyle(
+                    color: CustomColors.white,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w500
                   ),
                 )
               ],
             ),
+            widget: [
+              if (hasInternet)
+              Padding(
+                padding: const EdgeInsets.only(right: Dimensions.paddingMedium),
+                child: CommonIconButton(
+                  onPressed: () {},
+                  rippleColor: Colors.transparent,
+                  icon: const Icon(
+                    Icons.phone,
+                    size: 24.0,
+                    color: CustomColors.white,
+                  ),
+                ),
+              )
+            ],
           ),
-        ],
-      ),
+          body: hasInternet
+          ? Stack(
+            alignment: Alignment.bottomCenter,
+            clipBehavior: Clip.none,
+            children: [
+              ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return const Text('hello');
+                },
+              ),
+              Container(
+                height: 60.0,
+                margin: const EdgeInsets.symmetric(vertical: Dimensions.marginMedium),
+                width: context.screenWidth,
+                child: Row(
+                  spacing: Dimensions.spacingMedium,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimensions.paddingMedium),
+                        child: CommonTextField(
+                          controller: _messageController,
+                          onChanged: _onChanged,
+                          fillColor: CustomColors.white,
+                          filled: true,
+                          inputBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+                            borderSide: const BorderSide(color: CustomColors.gray)
+                          ),
+                          hintText: "Type a message...",
+                          hintTextStyle: const TextStyle(
+                            color: CustomColors.gray,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: Dimensions.paddingMedium),
+                      child: CommonIconButton(
+                        onPressed: _messageController.text.isEmpty ? null : _send,
+                        backgroundColor: _messageController.text.isEmpty ? CustomColors.primary.withValues(alpha: 0.5) : null,
+                        padding: EdgeInsets.zero,
+                        iconSize: 54.0,
+                        icon: const Icon(
+                          Icons.send,
+                          color: CustomColors.white,
+                          size: 20.0,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          )
+          : const Center(child: CommonState())
+        );
+      }
     );
   }
 }

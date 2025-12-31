@@ -17,28 +17,60 @@ import '../../feature/sending/sending_page.dart';
 import '../../feature/settings/settings_page.dart';
 import '../../feature/terms_and_conditions/terms_and_conditions_page.dart';
 import '../../feature/login/login_page.dart';
+import '../cubit/connectivity_cubit.dart';
 import '../utils/enum/slide_direction_enum.dart';
 import '../utils/go_router_extension.dart';
 import 'app_routes.dart';
+import 'go_router_refresh.dart';
 
 class AppRouter {
 
-  static GoRouter router = GoRouter(
+  static final connectivityCubit = getIt<ConnectivityCubit>();
+  static final refresh = getIt<GoRouterRefresh>();
+
+  static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.login,
+
+    refreshListenable: refresh,
+
     redirect: (context, state) {
       final prefs = getIt<SharedPreferencesManager>();
-      final hasSeenOnboarding = prefs.hasSeenOnboarding;
-      final hasSeenTermsAndConditions = prefs.hasSeenTermsAndConditions;
+      final location = state.matchedLocation;
+      final hasInternet = connectivityCubit.hasInternet;
+      final isLoggedIn = prefs.isLoggedIn;
 
-      if (!hasSeenOnboarding) {
+      if (isLoggedIn && location == AppRoutes.login) {
+        return AppRoutes.home;
+      }
+
+      if (!prefs.hasSeenOnboarding && location != AppRoutes.onboarding) {
         return AppRoutes.onboarding;
       }
-      if (!hasSeenTermsAndConditions) {
+
+      if (prefs.hasSeenOnboarding &&
+          !prefs.hasSeenTermsAndConditions &&
+          location != AppRoutes.termsandconditions) {
         return AppRoutes.termsandconditions;
       }
 
-      return null;
+      final criticalPages = [
+        AppRoutes.home,
+        AppRoutes.chat,
+        AppRoutes.settings,
+        AppRoutes.editProfile,
+        AppRoutes.addUser,
+        AppRoutes.conversation
+      ];
 
+      if (hasInternet && !isLoggedIn && criticalPages.contains(location)) {
+        return AppRoutes.login;
+      }
+
+      if (!hasInternet && location == AppRoutes.login) {
+        return AppRoutes.home;
+      }
+
+      return null;
     },
     routes: [
       GoRoute(

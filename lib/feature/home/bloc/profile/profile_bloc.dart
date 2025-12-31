@@ -17,10 +17,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _doGetProfile(DoGetProfileEvent event, Emitter<ProfileState> emit) {
     emit(LoadingState());
 
-    if (_sharedPreferencesManager.hasName.isNotEmpty) {
-      emit(LoadedState());
-    } else {
-      emit(ErrorState(message: ""));
+    if (_sharedPreferencesManager.getName.isNotEmpty) {
+      emit(LoadedState(profilePicture: _sharedPreferencesManager.getProfilePicture));
     }
   }
 }

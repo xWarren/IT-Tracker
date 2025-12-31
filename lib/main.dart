@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splash_master/core/splash_master.dart';
 
+import 'core/cubit/connectivity_cubit.dart';
 import 'core/resources/app_router.dart';
 import 'core/resources/theme.dart';
 import 'di/_dependencies.dart';
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => ProfileBloc()
+        ),
+        BlocProvider(
+          create: (_) => ConnectivityCubit()
         ),
       ],
       child: MaterialApp.router(

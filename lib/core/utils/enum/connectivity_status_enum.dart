@@ -1,0 +1,4 @@
+enum ConnectivityStatusEnum { 
+  connected, 
+  disconnected 
+}
