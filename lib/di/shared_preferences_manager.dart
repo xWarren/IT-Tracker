@@ -19,6 +19,7 @@ class SharedPreferencesManager {
   static const _lastConnectedDeviceNameKey = "last_connected_device_name_key";  
 
   static const _localDeviceIdKey = "local_device_id_key";
+  static const _rangeLimitsKey = "range_limits_key";
 
   static Future<SharedPreferencesManager> getInstance() async {
     if (_instance == null) {
@@ -55,4 +56,14 @@ class SharedPreferencesManager {
 
   String get localDeviceId => _prefs.getString(_localDeviceIdKey) ?? "";
   Future<void> setLocalDeviceId(String value) async => await _prefs.setString(_localDeviceIdKey, value);
+
+  Future<void> setRangeLimits(List<int> limits) async {
+    final stringList = limits.map((e) => e.toString()).toList();
+    await _prefs.setStringList(_rangeLimitsKey, stringList);
+  }
+
+  List<int> getRangeLimits() {
+    final stringList = _prefs.getStringList(_rangeLimitsKey) ?? [];
+    return stringList.map((e) => int.tryParse(e) ?? 0).toList();
+  }
 }

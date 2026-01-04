@@ -9,6 +9,7 @@ Future<void> _initApp() async {
   getIt.registerLazySingleton<ConnectivityCubit>(() => ConnectivityCubit());
   getIt.registerLazySingleton<GoRouterRefresh>(() => GoRouterRefresh(getIt<ConnectivityCubit>()));
   getIt.registerLazySingleton<FlutterBluePlus>(() => FlutterBluePlus());
+  getIt.registerSingletonWithLog<NotificationService>(NotificationService());
   getIt.registerSingletonWithLog<NearbyService>(NearbyService());
   getIt.registerSingleton<ReceiveBloc>(ReceiveBloc());
   getIt.registerSingleton<ConversationBloc>(ConversationBloc());

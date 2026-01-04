@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/cubit/connectivity_cubit.dart';
+import '../../core/cubit/notification_permission_cubit.dart';
+import '../../core/cubit/state/notification_permission_state.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _getProfile();
     _stopDiscover();
+    _checkPermission();
   }
 
   void _getProfile() => context.read<ProfileBloc>().add(DoGetProfileEvent());
@@ -69,18 +72,26 @@ class _HomePageState extends State<HomePage> {
     intent.launch();
   }
 
+  void _notificationPermission() {
+    context.read<NotificationPermissionCubit>().requestPermission();
+  }
+
+  void _checkPermission() {
+    context.read<NotificationPermissionCubit>().checkPermission();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ConnectivityCubit, ConnectivityState>(
+    return BlocConsumer<NotificationPermissionCubit, NotificationPermissionState>(
       listener: (context, state) {
-        if (state is ConnectivityLoaded) {
-          // if (state.isConnected) {
-          //   _getProfile();
-          // }
+        if (state is NotificationPermissionChecking) {
+
+        } else if (state is NotificationPermissionGranted) {
+        } else if (state is NotificationPermissionDenied) {
+          _notificationPermission();
         }
       },
-      builder: (context, state) {
-        
+      builder: (context, state) {        
         return Material(
           color: CustomColors.white.withValues(alpha: 0.9),
           child: AnnotatedRegion<SystemUiOverlayStyle>(

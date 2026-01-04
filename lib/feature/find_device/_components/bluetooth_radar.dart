@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+import '../../../core/common/common_image.dart';
+import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
 
 class BluetoothRadar extends StatefulWidget {
@@ -75,7 +77,6 @@ class _BluetoothRadarState extends State<BluetoothRadar>
             ),
           ),
 
-          /// ================= Center Icon =================
           Container(
             width: 110,
             height: 110,
@@ -83,11 +84,11 @@ class _BluetoothRadarState extends State<BluetoothRadar>
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.bluetooth,
-              size: 48,
-              color: Colors.indigo,
-            ),
+            child: const CommonImage(
+              path: Assets.logo3,
+              height: 48.0,
+              width: 48.0,
+            )
           ),
 
           ...List.generate(widget.deviceCount, (index) {

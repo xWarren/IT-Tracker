@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splash_master/core/splash_master.dart';
 
 import 'core/cubit/connectivity_cubit.dart';
+import 'core/cubit/notification_permission_cubit.dart';
+import 'core/cubit/range_limit_cubit.dart';
 import 'core/resources/app_router.dart';
 import 'core/resources/theme.dart';
 import 'di/_dependencies.dart';
@@ -89,6 +91,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => SetProfile2Bloc(),
+        ),
+        BlocProvider(
+          create: (_) => NotificationPermissionCubit(),
+        ),
+        BlocProvider(
+          create: (_) => RangeLimitCubit(getIt()),
         ),
       ],
       child: MaterialApp.router(

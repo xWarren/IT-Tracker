@@ -67,7 +67,6 @@ class FindDeviceBloc extends Bloc<FindDeviceEvent, FindDeviceState> {
     emit(ScanningState());
 
     await nearbyService.startDiscover((peers) {
-      log("Discovered ${peers.length} peers: ${peers.map((e) => e.info.displayName)}");
       add(_PeersUpdatedEvent(peers));
     });
   }

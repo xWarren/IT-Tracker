@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
+import '../../../di/shared_preferences_manager.dart';
 import '../../common/common_elevated_button.dart';
 import '../../common/common_icon_button.dart';
 import '../../common/common_text_field.dart';
+import '../../cubit/range_limit_cubit.dart';
 import '../../resources/colors.dart';
 import '../../resources/dimensions.dart';
 import '../context_extension.dart';
@@ -18,23 +22,43 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
   
   final List<TextEditingController> _rangeLimitControllers = <TextEditingController>[];
 
+  late final RangeLimitCubit _cubit;
+
   @override
   void initState() {
     super.initState();
-    _addRangeField();
+    _initCubit();();
   }
 
-  void _addRangeField() {
-    setState(() {
-      _rangeLimitControllers.add(TextEditingController());
-    });
+   void _initCubit() async {
+    final prefs = await SharedPreferencesManager.getInstance();
+    _cubit = RangeLimitCubit(prefs);
+
+    // Initialize text controllers with saved values
+    for (final value in _cubit.state) {
+      _rangeLimitControllers.add(TextEditingController(text: value.toString()));
+    }
+
+    if (_rangeLimitControllers.isEmpty) {
+      _addField();
+    }
+
+    setState(() {});
   }
 
-  void _removeRangeField(int index) {
-    setState(() {
-      _rangeLimitControllers[index].dispose();
-      _rangeLimitControllers.removeAt(index);
-    });
+
+ void _addField() {
+    final controller = TextEditingController();
+    _rangeLimitControllers.add(controller);
+    _cubit.addRange(0);
+    setState(() {});
+  }
+
+  void _removeField(int index) {
+    _rangeLimitControllers[index].dispose();
+    _rangeLimitControllers.removeAt(index);
+    _cubit.removeRangeAt(index);
+    setState(() {});
   }
 
   @override
@@ -42,6 +66,7 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
     for (final controller in _rangeLimitControllers) {
       controller.dispose();
     }
+    _cubit.close();
     super.dispose();
   }
 
@@ -108,7 +133,7 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
                       const SizedBox(width: 8),
                       if (_rangeLimitControllers.length > 1)
                       IconButton(
-                        onPressed: () => _removeRangeField(index),
+                        onPressed: _rangeLimitControllers.length > 1 ? () => _removeField(index) : null,
                         icon: const Icon(
                           Icons.remove_circle,
                           color: Colors.red,
@@ -124,7 +149,7 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
               child: SizedBox(
                 width: 100.0,
                 child: CommonElevatedButton(
-                  onButtonPressed: _addRangeField,
+                  onButtonPressed: _addField,
                   padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingExtraSmall),
                   backgroundColor: CustomColors.secondary.withValues(alpha: 0.2),
                   borderSide: const BorderSide(color: CustomColors.secondary),
@@ -155,8 +180,19 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
               height: 40.0,
               width: context.screenWidth,
               child: CommonElevatedButton(
-                onButtonPressed: context.dismissBottomSheet,
-                text: "Continue",
+                onButtonPressed: () async {
+                  for (int i = 0; i < _rangeLimitControllers.length; i++) {
+                    final value = int.tryParse(_rangeLimitControllers[i].text) ?? 0;
+                    _cubit.updateRange(i, value);
+                  }
+                  
+                  await _cubit.save();
+
+                  log("Saved ranges: ${_cubit.state}");
+
+                  context.dismissBottomSheet();
+                },
+                text: "Save",
               ),
             ),
           ],

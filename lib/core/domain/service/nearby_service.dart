@@ -169,8 +169,20 @@ class NearbyService {
   }) {
     if (_connectedDevice == null) return;
     message.content.byType(
-      onTextRequest: onTextRequestCallBack,
-      onTextResponse: onTextResponseCallBack,
+      onTextRequest: (request) async {
+        if (request.value == 'ping') {
+          await send(
+            nearby.NearbyMessageTextRequest.create(value: 'ping'),
+          );
+        }
+        onTextRequestCallBack(request);
+      },
+      onTextResponse: (response) {
+        if (response.isValid) {
+          handleIncomingMessage('ping');
+        }
+        onTextResponseCallBack(response);
+      },
       onFilesResponse: onFilesResponseCallBack,
       onFilesRequest: (request) async {
         await send(
@@ -252,6 +264,27 @@ class NearbyService {
   bool isDeviceInRange(nearby.NearbyDevice device) {
     final foundDevice = _peers.where((d) => d.info.id == device.info.id).firstOrNull;
     return foundDevice?.status.isConnected ?? false;
+  }
+
+  final _latencyController = StreamController<int>.broadcast();
+  DateTime? _pingStart;
+
+  Stream<int> get latencyStreams => _latencyController.stream;
+
+  void handleIncomingMessage(String value) {
+    if (value == 'ping' && _pingStart != null) {
+      final latency = DateTime.now().difference(_pingStart!).inMilliseconds;
+      _latencyController.add(latency);
+      _pingStart = null;
+    }
+  }
+
+  Future<void> sendPing() async {
+    if (_connectedDevice == null) return;
+    _pingStart = DateTime.now();
+    await send(
+      nearby.NearbyMessageTextRequest.create(value: "ping"),
+    );
   }
 
 

@@ -5,6 +5,7 @@ class Assets {
 
   static const logo = "$imagesPath/logo.png";
   static const logo2 = "$imagesPath/logo2.png";
+  static const logo3 = "$imagesPath/logo3.jpeg";
   static const documentDownload = "$imagesPath/document_download.png";
   static const send = "$imagesPath/send.png";
 

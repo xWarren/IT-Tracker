@@ -83,13 +83,11 @@ class _FindDevicePageState extends State<FindDevicePage> {
           if (state is InitializedState) {
             _startDiscover();
             _peers = [];
-            log("initialized");
           } else if (state is ScanResultState) {
             _peers = state.peers;
           } else if (state is ConnectingState) {
             context.showLoading();
           } else if (state is ConnectedState) {
-            log("is connected?");
             _connected();
           }
           else if (state is ErrorState) {
@@ -113,7 +111,7 @@ class _FindDevicePageState extends State<FindDevicePage> {
                   margin: const EdgeInsets.only(bottom: 200.0),
                   alignment: Alignment.center,
                   child: BluetoothRadar(
-                    deviceCount: results.length,
+                    deviceCount: _peers.length,
                   ),
                 ),
                 Align(

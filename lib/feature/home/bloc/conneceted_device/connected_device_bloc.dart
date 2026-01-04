@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:developer' as dev;
 
 import 'package:bloc/bloc.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../core/domain/service/nearby_service.dart';
+import '../../../../core/domain/service/notification_service.dart';
 import '../../../../di/_dependencies.dart';
 import '../../../../di/shared_preferences_manager.dart';
 
@@ -21,6 +23,11 @@ class ConnectedDeviceBloc extends Bloc<ConnectedDeviceEvent, ConnectedDeviceStat
 
   final SharedPreferencesManager _sharedPreferencesManager = getIt();
   final NearbyService _nearbyService = getIt();
+  final NotificationService _notificationService = getIt();
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  bool _hasNotified = false;
 
   StreamSubscription<int>? _rssiSub;
   StreamSubscription<bool>? _connectionSub;
@@ -48,6 +55,13 @@ class ConnectedDeviceBloc extends Bloc<ConnectedDeviceEvent, ConnectedDeviceStat
             _rssiSub = _nearbyService.latencyStream(const Duration(seconds: 3)).listen((latency) {
               add(UpdateRssiEvent(rssi: latency));
             });
+
+            _notificationService.showNotification(
+              id: 1,
+              title: "Device Connected",
+              body: "${device.info.displayName} is now connected",
+              ongoing: true
+            );
 
             return LoadedState(
               distance: -1,
@@ -87,15 +101,47 @@ class ConnectedDeviceBloc extends Bloc<ConnectedDeviceEvent, ConnectedDeviceStat
         deviceName: "",
       ),
     );
+    
+    if (_nearbyService.connectedDevice?.info.displayName.isNotEmpty == true) {
+      _notificationService.showNotification(
+        id: 2,
+        title: "Device Disconnected",
+        body: "${_nearbyService.connectedDevice?.info.displayName} disconnected",
+        ongoing: false
+      );
+    }
+
   }
 
-  void _updateRssi(UpdateRssiEvent event, Emitter<ConnectedDeviceState> emit) {
+  void _updateRssi(UpdateRssiEvent event, Emitter<ConnectedDeviceState> emit) async {
     final device = _nearbyService.connectedDevice;
+
     if (device == null) return;
 
     final latency = event.rssi;
 
-    final distance = _calculateDistanceFromLatency(latency);
+    final distance = latencyToMeters(latency);
+
+    final savedLimits = _sharedPreferencesManager.getRangeLimits();
+
+    final exceeded = savedLimits.any((limit) => distance > limit);
+
+    if (exceeded && !_hasNotified) {
+      _hasNotified = true;
+      _notificationService.showNotification(
+        id: 3,
+        title: "Device Out of Range",
+        body: "${device.info.displayName} is beyond the set range (${distance.toStringAsFixed(1)} m)",
+        ongoing: false,
+      );
+      await _audioPlayer.addAudioSource(AudioSource.asset('assets/sounds/alarm.WAV'));
+      await _audioPlayer.play();
+
+    }
+
+    if (!exceeded) {
+      _hasNotified = false;
+    }
 
     emit(
       LoadedState(
@@ -107,9 +153,11 @@ class ConnectedDeviceBloc extends Bloc<ConnectedDeviceEvent, ConnectedDeviceStat
   }
 
 
-  double _calculateDistanceFromLatency(int latencyMs) {
-    if (latencyMs <= 0) return -1.0;
-    return latencyMs / 3.0;
+  double latencyToMeters(int latencyMs) {
+    if (latencyMs <= 0) return -1;
+
+    // Empirical approximation
+    return (latencyMs / 10).clamp(0.5, 30);
   }
 
 

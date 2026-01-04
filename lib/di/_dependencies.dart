@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/cubit/connectivity_cubit.dart';
 import '../core/domain/service/nearby_service.dart';
+import '../core/domain/service/notification_service.dart';
 import '../core/resources/go_router_refresh.dart';
 import '../core/utils/get_it_extension.dart';
 import '../feature/conversation/bloc/conversation_bloc.dart';
