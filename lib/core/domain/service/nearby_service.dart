@@ -71,29 +71,27 @@ class NearbyService {
   }) async {
     final result = await _nearby.connectById(device.info.id);
     log("conect isConnected: ${device.status.isConnected} result: $result _connectedDevice: $_connectedDevice");
-    if (result || device.status.isConnected) {
-      final channelStarting = _tryCommunicate(
-        device: device, 
-        onTextResponseCallBack: onTextResponseCallBack, 
-        onTextRequestCallBack: onTextRequestCallBack, 
-        onFilesRequestCallBack: onFilesRequestCallBack, 
-        onFilesResponseCallBack: onFilesResponseCallBack, 
-        savePackCallBack: savePackCallBack
-      );
+    final channelStarting = _tryCommunicate(
+      device: device, 
+      onTextResponseCallBack: onTextResponseCallBack, 
+      onTextRequestCallBack: onTextRequestCallBack, 
+      onFilesRequestCallBack: onFilesRequestCallBack, 
+      onFilesResponseCallBack: onFilesResponseCallBack, 
+      savePackCallBack: savePackCallBack
+    );
 
-      if (!channelStarting) {
-        _connectionCheckTimer = Timer.periodic(
-          const Duration(seconds: 2),
-          (_) => _tryCommunicate(
-            device: device,
-            onTextResponseCallBack: onTextResponseCallBack,
-            onTextRequestCallBack: onTextRequestCallBack,
-            onFilesRequestCallBack: onFilesRequestCallBack,
-            onFilesResponseCallBack: onFilesResponseCallBack,
-            savePackCallBack: savePackCallBack,
-          ),
-        );
-      }
+    if (!channelStarting) {
+      _connectionCheckTimer = Timer.periodic(
+        const Duration(seconds: 2),
+        (_) => _tryCommunicate(
+          device: device,
+          onTextResponseCallBack: onTextResponseCallBack,
+          onTextRequestCallBack: onTextRequestCallBack,
+          onFilesRequestCallBack: onFilesRequestCallBack,
+          onFilesResponseCallBack: onFilesResponseCallBack,
+          savePackCallBack: savePackCallBack,
+        ),
+      );
     }
   }
 
@@ -213,6 +211,7 @@ class NearbyService {
     } finally {
       await _nearby.endCommunicationChannel();
       // await _nearby.stopDiscovery();
+      _connectedDevice = null;
       await _peersSubs?.cancel();
       _peers = [];
       peersCallBack([]);
