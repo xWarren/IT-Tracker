@@ -7,14 +7,14 @@ import '../../resources/colors.dart';
 import '../../resources/dimensions.dart';
 import '../context_extension.dart';
 
-class StatusBottomsheet extends StatefulWidget {
-  const StatusBottomsheet({super.key});
+class LogOutBottomsheet extends StatefulWidget {
+  const LogOutBottomsheet({super.key});
 
   @override
-  State<StatusBottomsheet> createState() => _StatusBottomsheetState();
+  State<LogOutBottomsheet> createState() => _LogOutBottomsheetState();
 }
 
-class _StatusBottomsheetState extends State<StatusBottomsheet> {
+class _LogOutBottomsheetState extends State<LogOutBottomsheet> {
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class _StatusBottomsheetState extends State<StatusBottomsheet> {
                 )
               ],
             ),
-            SizedBox(height: context.sreenBottom),
+            SizedBox(height: context.screenBottom),
           ],
         ),
       ),

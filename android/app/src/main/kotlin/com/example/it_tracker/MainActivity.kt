@@ -81,11 +81,11 @@ class MainActivity : FlutterActivity() {
             val map: MutableMap<String, Any> = mutableMapOf()
             map["appName"] = name
             map["packageName"] = app.packageName
-            map["apkPath"] = app.sourceDir
+            map["sourceDir"] = app.sourceDir
             map["icon"] = stream.toByteArray()
             map["appSizeBytes"] = apkSizeBytes
             map["appSizeMB"] = apkSizeMB
-            map["isSendable"] = true   // 👈 explicit flag for Flutter
+            map["isSendable"] = true
 
             result.add(map)
         }

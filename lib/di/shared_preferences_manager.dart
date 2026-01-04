@@ -15,6 +15,11 @@ class SharedPreferencesManager {
   static const _nameKey = "name_key";
   static const _phoneNumberKey = "phone_number_key";
 
+  static const _lastConnectedDeviceIdKey = "last_connected_device_id_key";
+  static const _lastConnectedDeviceNameKey = "last_connected_device_name_key";  
+
+  static const _localDeviceIdKey = "local_device_id_key";
+
   static Future<SharedPreferencesManager> getInstance() async {
     if (_instance == null) {
       final prefs = await SharedPreferences.getInstance();
@@ -39,5 +44,15 @@ class SharedPreferencesManager {
   Future<void> setName(String value) async => await _prefs.setString(_nameKey, value);
 
   String get getPhoneNumber => _prefs.getString(_phoneNumberKey) ?? "";
-  Future<void> setPhoneNumebr(String value) async => await _prefs.setString(_phoneNumberKey, value);
+  Future<void> setPhoneNumber(String value) async => await _prefs.setString(_phoneNumberKey, value);
+
+  Future<void> setLastConnectedDevice({required String id,required String name}) async {
+    await _prefs.setString(_lastConnectedDeviceIdKey, id);
+    await _prefs.setString(_lastConnectedDeviceNameKey, name);
+  }
+  String get lastConnectedDeviceId => _prefs.getString(_lastConnectedDeviceIdKey) ?? "";
+  String get lastConnectedDeviceName => _prefs.getString(_lastConnectedDeviceNameKey) ?? "";
+
+  String get localDeviceId => _prefs.getString(_localDeviceIdKey) ?? "";
+  Future<void> setLocalDeviceId(String value) async => await _prefs.setString(_localDeviceIdKey, value);
 }

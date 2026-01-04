@@ -1,17 +1,21 @@
+import 'dart:developer';
+
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/cubit/connectivity_cubit.dart';
-import '../../core/resources/app_routes.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
+import '../find_device/bloc/find_device/find_device_bloc.dart' hide ErrorState;
 import '_components/connected_device.dart';
 import '_components/file_transfer.dart';
 import '_components/find_device.dart';
 import '_components/online_menu.dart';
+import 'bloc/conneceted_device/connected_device_bloc.dart' hide LoadedState, ErrorState;
 import 'bloc/profile/profile_bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,27 +27,59 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  String _profilePicture = "";
 
   @override
   void initState() {
     super.initState();
     _getProfile();
+    _stopDiscover();
   }
 
   void _getProfile() => context.read<ProfileBloc>().add(DoGetProfileEvent());
+
+  void _stopDiscover() {
+    context.read<FindDeviceBloc>().add(StopDiscoverEvent());
+    _disconnect();
+  }
+  
+
+  void _disconnect() {
+    context.read<ConnectedDeviceBloc>().add(DoDisconnectEvent());
+  }
+
+  void _showStatus() {
+    context.showStatus(
+      title: "Are you sure you want to disconnect?", 
+      description: "", 
+      buttonTitle: "Disconnect", 
+      onButtonPressed: () {
+        _stopDiscover();
+        context.dismissDialog();
+      },
+      buttonTitle2: "Cancel",
+      onButtonPressed2: context.pop
+    );
+  }
+
+  void _openBluetoothSettings() async {
+    final intent = const AndroidIntent(
+      action: 'android.settings.BLUETOOTH_SETTINGS',
+    );
+    intent.launch();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ConnectivityCubit, ConnectivityState>(
       listener: (context, state) {
         if (state is ConnectivityLoaded) {
-          if (state.isConnected) {
-            _getProfile();
-          }
+          // if (state.isConnected) {
+          //   _getProfile();
+          // }
         }
       },
       builder: (context, state) {
-        final hasInternet = state is ConnectivityLoaded && state.isConnected;
         
         return Material(
           color: CustomColors.white.withValues(alpha: 0.9),
@@ -65,13 +101,12 @@ class _HomePageState extends State<HomePage> {
                         BlocConsumer<ProfileBloc, ProfileState>(
                           listener: (context, state) {
                             if (state is LoadedState) {
+                              log("state.profilePicture ${state.profilePicture}");
                               if (state.profilePicture.isEmpty) {
-                                context.go(AppRoutes.login);
-                              } if (hasInternet && state.profilePicture.isNotEmpty) {
                                 context.showSetUpYourProfile();
                               }
-                            } else if (state is ErrorState) {
                               
+                              _profilePicture = state.profilePicture;
                             }
                           },
                           builder: (context, state) {
@@ -85,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                               color: CustomColors.primary,
                               child: BlocBuilder<ConnectivityCubit, ConnectivityState>(
                                 builder: (context, state) {
-                                  final hasInternet = state is ConnectivityLoaded && state.isConnected;
+                                  // final hasInternet = state is ConnectivityLoaded && state.isConnected;
         
                                   return Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Text(
-                                            "I Tracker",
+                                            "iTracker",
                                             style: TextStyle(
                                               color: CustomColors.white,
                                               fontSize: 20.0,
@@ -112,8 +147,7 @@ class _HomePageState extends State<HomePage> {
                                           )
                                         ],
                                       ),
-                                      if (hasInternet)
-                                      const OnlineMenu()
+                                      OnlineMenu(profilePicture: _profilePicture)
                                     ],
                                   );
                                 }
@@ -121,16 +155,16 @@ class _HomePageState extends State<HomePage> {
                             );
                           }
                         ),
-                        const Positioned(
+                        Positioned(
                           top: 150,
                           left: 0,
                           right: 0,
                           child: Column(
                             spacing: Dimensions.spacingMedium,
                             children: [
-                              FindDevice(),
-                              ConnectedDevice(),
-                              FileTransfer()
+                              FindDevice(openBluetoothSettings: _openBluetoothSettings),
+                              ConnectedDevice(disconnect: _showStatus),
+                              const FileTransfer()
                             ]
                           ),
                         ),

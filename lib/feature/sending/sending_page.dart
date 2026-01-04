@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/common/common_appbar.dart';
 import '../../core/common/common_divider.dart';
 import '../../core/common/common_elevated_button.dart';
 import '../../core/common/common_image.dart';
+import '../../core/resources/app_routes.dart';
 import '../../core/resources/assets.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
-import '_components/add_contact_card.dart';
+import '../find_device/bloc/find_device/find_device_bloc.dart';
+import '../home/bloc/conneceted_device/connected_device_bloc.dart';
+// import '_components/add_contact_card.dart';
 
 class SendingPage extends StatefulWidget {
-  const SendingPage({super.key});
+  
+  const SendingPage({
+    super.key,
+    required this.deviceName,
+  });
+
+  final String deviceName;
 
   @override
   State<SendingPage> createState() => _SendingPageState();
@@ -39,6 +50,17 @@ class _SendingPageState extends State<SendingPage> {
     });
   }
 
+  void _stopDiscover() {
+    context.read<FindDeviceBloc>().add(StopDiscoverEvent());
+    _disconnect();
+  }
+  
+
+  void _disconnect() {
+    context.read<ConnectedDeviceBloc>().add(DoDisconnectEvent());
+    context.go(AppRoutes.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,10 +80,10 @@ class _SendingPageState extends State<SendingPage> {
                 ),
               ),
             ),
-            const Center(
+            Center(
               child: Text(
-                "to Android V2",
-                style: TextStyle(
+                "to ${widget.deviceName}",
+                style: const TextStyle(
                   color: CustomColors.gray,
                   fontSize: 14.0,
                   fontWeight: FontWeight.w400
@@ -75,7 +97,7 @@ class _SendingPageState extends State<SendingPage> {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
+                itemCount: 1,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSmall),
@@ -96,7 +118,7 @@ class _SendingPageState extends State<SendingPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
-                                    "Facebook",
+                                    "base",
                                     style: TextStyle(
                                       color: CustomColors.primary,
                                       fontSize: 14.0,
@@ -136,7 +158,7 @@ class _SendingPageState extends State<SendingPage> {
               ),
             ),
             const SizedBox(height: Dimensions.spacingMedium),
-            const AddContactCard(),
+            // const AddContactCard(),
             const SizedBox(height: 100.0),
           ],
         ),
@@ -144,12 +166,12 @@ class _SendingPageState extends State<SendingPage> {
       bottomSheet: Container(
         height: 50.0,
         width: context.screenWidth,
-        margin: const EdgeInsets.symmetric(
+        margin: EdgeInsets.symmetric(
           horizontal: Dimensions.marginMedium,
-          vertical: Dimensions.marginLarge
+          vertical: context.screenBottom + Dimensions.marginMedium
         ),
         child: CommonElevatedButton(
-          onButtonPressed: (progress * 100).toInt() == 100 ? () {} : null ,
+          onButtonPressed: (progress * 100).toInt() == 100 ? _stopDiscover : null ,
           text: "Continue",
           borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusLarge),
         ),

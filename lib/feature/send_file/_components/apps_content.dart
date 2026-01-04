@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,9 +9,14 @@ import '../../../core/resources/keys.dart';
 
 class AppsContent extends StatefulWidget {
 
-  const AppsContent({super.key, required this.appCallBack});
+  const AppsContent({
+    super.key, 
+    required this.appCallBack,
+    required this.onFilesSelected
+  });
 
   final Function(bool isSelected) appCallBack;
+  final Function(List<File> files) onFilesSelected;
 
   @override
   State<AppsContent> createState() => _AppsContentState();
@@ -50,12 +57,19 @@ class _AppsContentState extends State<AppsContent> {
         _selectedPackages.add(packageName);
       }
 
-      if (_selectedPackages.isEmpty) {
-        widget.appCallBack(false);
+      final hasSelection = _selectedPackages.isNotEmpty;
+      widget.appCallBack(hasSelection);
+
+      if (hasSelection) {
+        widget.onFilesSelected(_mapSelectedAppsToFiles());
       } else {
-        widget.appCallBack(true);
+        widget.onFilesSelected([]);
       }
     });
+  }
+
+  List<File> _mapSelectedAppsToFiles() {
+    return _apps.where((app) => _selectedPackages.contains(app['packageName'])).map((app) => File(app['sourceDir'])).toList();
   }
 
   @override

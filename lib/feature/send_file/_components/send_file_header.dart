@@ -97,8 +97,6 @@ class SendFileHeader extends SliverPersistentHeaderDelegate {
                 ),
                 tabs: const [
                   Tab(text: "Apps"),
-                  Tab(text: "Files"),
-                  Tab(text: "Videos"),
                   Tab(text: "Photos")
                 ],
               ),

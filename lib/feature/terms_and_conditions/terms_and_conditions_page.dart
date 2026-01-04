@@ -36,7 +36,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
     return BlocConsumer<TermsAndConditionsBloc, TermsAndConditionsState>(
       listener: (context, state) {
         if (state is LoadedState) {
-          context.go(AppRoutes.login);
+          context.go(AppRoutes.home);
         } 
       },
       builder: (context, state) {

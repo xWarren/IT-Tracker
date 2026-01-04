@@ -7,6 +7,7 @@ import '../../core/resources/app_routes.dart';
 import '../../core/resources/assets.dart';
 import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
+import '../../core/utils/context_extension.dart';
 import '_components/onboarding_item.dart';
 import 'bloc/onboarding_bloc.dart';
 
@@ -26,7 +27,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final List<Map<String, String>> _onboardings = [
     {
       "image": Assets.download,
-      "title": "Welcome to I Tracker",
+      "title": "Welcome to iTracker",
       "description": "Easily connect with nearby devices and transfer files faster than ever. Tap Send or Receive to get started!"
     },
     {
@@ -128,7 +129,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     _buildCircle()
                   ],
                 ),
-              )
+              ),
+              SizedBox(height: context.screenBottom)
             ],
           );
         }

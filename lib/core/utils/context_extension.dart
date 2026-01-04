@@ -1,13 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
 
 import 'bottomsheet/add_contact_bottomsheet.dart';
+import 'bottomsheet/available_devices_bottomsheet.dart';
 import 'bottomsheet/set_up_your_profile_bottomsheet.dart';
-import 'bottomsheet/status_bottomsheet.dart';
+import 'bottomsheet/logout_bottomsheet.dart';
+import 'dialog/loading_dialog.dart';
 import 'dialog/select_avatar_dialog.dart';
 import 'dialog/set_range_limit_dialog.dart';
+import 'dialog/status_dialog.dart';
 
 extension ContextExt on BuildContext {
 
@@ -15,7 +19,7 @@ extension ContextExt on BuildContext {
 
   double get screenHeight => MediaQuery.of(this).size.height;
 
-  double get sreenBottom => MediaQuery.of(this).viewInsets.bottom + MediaQuery.of(this).viewPadding.bottom;
+  double get screenBottom => MediaQuery.of(this).viewInsets.bottom + MediaQuery.of(this).viewPadding.bottom;
 
   void nextFocus() => FocusScope.of(this).nextFocus();
 
@@ -71,11 +75,20 @@ extension ContextExt on BuildContext {
     );
   }
 
-  void showStatus() {
+  void showLogout() {
     showModalBottomSheet(
       context: this,
       builder: (_) {
-        return const StatusBottomsheet();
+        return const LogOutBottomsheet();
+      }
+    );
+  }
+
+  void showAvailableDevices({required List<ScanResult> results}) {
+    showModalBottomSheet(
+      context: this,
+      builder: (_) {
+        return AvailableDevicesBottomsheet(results: results);
       }
     );
   }
@@ -94,6 +107,40 @@ extension ContextExt on BuildContext {
       context: this,
       builder: (_) {
         return const SetRangeLimitDialog();
+      }
+    );
+  }
+
+  void showLoading() {
+    showDialog(
+      context: this,
+      barrierDismissible: false,
+      builder: (_) {
+        return const LoadingDialog();
+      }
+    );
+  }
+
+  void showStatus({
+    required String title,
+    required String description,
+    required String buttonTitle,
+    required VoidCallback onButtonPressed,
+    String? buttonTitle2,
+    VoidCallback? onButtonPressed2
+  }) {
+    showDialog(
+      context: this,
+      barrierDismissible: false,
+      builder: (_) {
+        return StatusDialog(
+          title: title,
+          description: description,
+          buttonTitle: buttonTitle,
+          onButtonPressed: onButtonPressed,
+          buttonTitle2: buttonTitle2,
+          onButtonPressed2: onButtonPressed2
+        );
       }
     );
   }

@@ -12,7 +12,7 @@ class OfflineMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonIconButton(
-      onPressed: context.showStatus,
+      onPressed: context.showLogout,
       icon: const CommonImage(
         path: Assets.logout,
         height: 24.0,

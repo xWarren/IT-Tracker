@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/common/common_icon_button.dart';
+import '../../../core/common/common_image.dart';
 import '../../../core/resources/app_routes.dart';
 import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
-
 class OnlineMenu extends StatelessWidget {
-  const OnlineMenu({super.key});
+
+  const OnlineMenu({super.key, required this.profilePicture});
+
+  final String profilePicture;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,8 @@ class OnlineMenu extends StatelessWidget {
         CommonIconButton(
           onPressed: () => context.push(AppRoutes.editProfile),
           backgroundColor: CustomColors.white,
-          icon: Container(
+          icon: profilePicture.isEmpty
+          ? Container(
             height: 24.0,
             width: 24.0,
             decoration: const BoxDecoration(
@@ -25,16 +31,21 @@ class OnlineMenu extends StatelessWidget {
               shape: BoxShape.circle
             ),
           )
+          : CommonImage(
+            file: File(profilePicture),
+            height: 24.0,
+            width: 24.0,
+          )
         ),
-        CommonIconButton(
-          onPressed: () => context.push(AppRoutes.chat),
-          backgroundColor: Colors.transparent,
-          rippleColor: Colors.transparent,
-          icon: const Icon(
-            Icons.message,
-            color: CustomColors.white,
-          ),
-        ),
+        // CommonIconButton(
+        //   onPressed: () => context.push(AppRoutes.chat),
+        //   backgroundColor: Colors.transparent,
+        //   rippleColor: Colors.transparent,
+        //   icon: const Icon(
+        //     Icons.message,
+        //     color: CustomColors.white,
+        //   ),
+        // ),
         CommonIconButton(
           onPressed: () => context.push(AppRoutes.settings),
           backgroundColor: Colors.transparent,

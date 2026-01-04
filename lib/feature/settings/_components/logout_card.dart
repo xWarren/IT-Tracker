@@ -15,7 +15,7 @@ class LogoutCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(Dimensions.paddingMedium),
       child: CommonElevatedButton(
-        onButtonPressed: context.showStatus,
+        onButtonPressed: context.showLogout,
         backgroundColor: Colors.white,
         padding: const EdgeInsets.all(Dimensions.paddingMedium),
         borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusExtraSmall),

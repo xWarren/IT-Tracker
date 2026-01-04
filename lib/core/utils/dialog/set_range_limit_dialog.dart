@@ -21,7 +21,7 @@ class _SetRangeLimitDialogState extends State<SetRangeLimitDialog> {
   @override
   void initState() {
     super.initState();
-    _addRangeField(); // start with 1 field
+    _addRangeField();
   }
 
   void _addRangeField() {

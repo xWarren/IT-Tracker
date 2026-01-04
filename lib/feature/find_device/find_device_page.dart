@@ -1,9 +1,20 @@
+import 'dart:developer';
+
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nearby_service/nearby_service.dart';
 
 import '../../core/common/common_appbar.dart';
-import '../../core/common/common_elevated_button.dart';
-import '../../core/resources/dimensions.dart';
+import '../../core/resources/colors.dart';
+import '../../core/utils/connectivity_util.dart';
+import '../../core/utils/context_extension.dart';
+import '../home/bloc/conneceted_device/connected_device_bloc.dart' hide ErrorState;
+import '_components/bluetooth_radar.dart';
+import '_components/device_list.dart';
+import 'bloc/find_device/find_device_bloc.dart';
 
 class FindDevicePage extends StatefulWidget {
   const FindDevicePage({super.key});
@@ -14,91 +25,103 @@ class FindDevicePage extends StatefulWidget {
 
 class _FindDevicePageState extends State<FindDevicePage> {
 
+  List<ScanResult> results = [];
+
+  List<NearbyDevice> _peers = [];
 
   @override
   void initState() {
-    _startScan();
     super.initState();
+    _initialize();
   }
+  
 
   @override
   void dispose() {
-    _stopScan();
     super.dispose();
   }
 
-  void _startScan() async {
-    if (await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
-      FlutterBluePlus.startScan(
-        timeout: const Duration(seconds: 5),
-        androidUsesFineLocation: true
-      );
-    }
+  void _initialize() {
+    context.read<FindDeviceBloc>().add(InitializeNearbyEvent());
   }
 
-  void _stopScan() {
-    FlutterBluePlus.stopScan();
+  void _startDiscover() {
+    context.read<FindDeviceBloc>().add(StartDiscoverEvent());
   }
 
+  void _connected() {
+    context.read<ConnectedDeviceBloc>().add(DoConnectedEvent());
+    // context.read<ConnectedDeviceBloc>().add(IsConnectedEvent());
+    context.dismissDialog();
+    context.pop();
+  }
+
+  Future<void> _openWifiSettings() async {
+
+    final navigator = Navigator.of(context);
+
+    final intent = const AndroidIntent(
+      action: 'android.settings.WIFI_SETTINGS',
+    );
+
+    await intent.launch();
+
+    ConnectivityUtil.connectivityStream().listen((hasInternet) {
+      log("hasInternet: $hasInternet");
+      if (hasInternet) {
+        navigator.pop();
+      } 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(textTitle: "Find Device"),
-      body: StreamBuilder<List<ScanResult>>(
-        stream: FlutterBluePlus.scanResults,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
+      body: BlocConsumer<FindDeviceBloc, FindDeviceState>(
+        listener: (context, state) {
+          if (state is InitializedState) {
+            _startDiscover();
+            _peers = [];
+            log("initialized");
+          } else if (state is ScanResultState) {
+            _peers = state.peers;
+          } else if (state is ConnectingState) {
+            context.showLoading();
+          } else if (state is ConnectedState) {
+            log("is connected?");
+            _connected();
+          }
+          else if (state is ErrorState) {
+            context.showStatus(
+              title: 'Oops', 
+              description: 'Please enable your WiFi', 
+              buttonTitle: "Continue",
+              onButtonPressed: _openWifiSettings,
             );
           }
+        },
+        builder: (context, state) {
 
-          final results = snapshot.data!;
-
-          if (results.isEmpty) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: Dimensions.spacingMedium,
+          return Container(
+            color: CustomColors.gray.withValues(alpha: 0.2),
+            child: Stack(
+              alignment: Alignment.topCenter,
+              clipBehavior: Clip.none,
               children: [
-                const Center(
-                  child: Text("No devices found"),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 200.0),
+                  alignment: Alignment.center,
+                  child: BluetoothRadar(
+                    deviceCount: results.length,
+                  ),
                 ),
-                CommonElevatedButton(
-                  onButtonPressed: () {
-                    _stopScan();
-                    _startScan();
-                  },
-                  text: "Re-scan again",
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: DeviceList(peers: _peers),
                 )
               ],
-            );
-          }
-
-          return ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, index) {
-              final result = results[index];
-              final device = result.device;
-
-              return ListTile(
-                leading: const Icon(Icons.bluetooth),
-                title: Text(
-                  device.name.isNotEmpty
-                      ? device.name
-                      : "Unknown Device",
-                ),
-                subtitle: Text(device.id.id),
-                trailing: Text(
-                  "${result.rssi} dBm",
-                  style: const TextStyle(fontSize: 12),
-                ),
-                onTap: () {
-                  // You can connect here if needed
-                  // device.connect();
-                },
-              );
-            },
+            ),
           );
         },
       ),

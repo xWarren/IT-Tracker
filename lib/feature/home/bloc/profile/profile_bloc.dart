@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 
 import '../../../../di/_dependencies.dart';
@@ -17,8 +19,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   void _doGetProfile(DoGetProfileEvent event, Emitter<ProfileState> emit) {
     emit(LoadingState());
 
-    if (_sharedPreferencesManager.getName.isNotEmpty) {
-      emit(LoadedState(profilePicture: _sharedPreferencesManager.getProfilePicture));
-    }
+    log("asdhahsd ${_sharedPreferencesManager.getProfilePicture}");
+
+    emit(LoadedState(profilePicture: _sharedPreferencesManager.getProfilePicture));
   }
 }

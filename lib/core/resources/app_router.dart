@@ -8,6 +8,7 @@ import '../../feature/chat/chat_page.dart';
 import '../../feature/conversation/conversation_page.dart';
 import '../../feature/edit_profile/edit_profile_page.dart';
 import '../../feature/find_device/find_device_page.dart';
+import '../../feature/history/history_page.dart';
 import '../../feature/home/home_page.dart';
 import '../../feature/onboarding/onboarding_page.dart';
 import '../../feature/receive/receive_page.dart';
@@ -22,6 +23,7 @@ import '../utils/enum/slide_direction_enum.dart';
 import '../utils/go_router_extension.dart';
 import 'app_routes.dart';
 import 'go_router_refresh.dart';
+import 'keys.dart';
 
 class AppRouter {
 
@@ -29,45 +31,19 @@ class AppRouter {
   static final refresh = getIt<GoRouterRefresh>();
 
   static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.login,
-
+    initialLocation: AppRoutes.home,
     refreshListenable: refresh,
 
     redirect: (context, state) {
       final prefs = getIt<SharedPreferencesManager>();
       final location = state.matchedLocation;
-      final hasInternet = connectivityCubit.hasInternet;
-      final isLoggedIn = prefs.isLoggedIn;
-
-      if (isLoggedIn && location == AppRoutes.login) {
-        return AppRoutes.home;
-      }
 
       if (!prefs.hasSeenOnboarding && location != AppRoutes.onboarding) {
         return AppRoutes.onboarding;
       }
 
-      if (prefs.hasSeenOnboarding &&
-          !prefs.hasSeenTermsAndConditions &&
-          location != AppRoutes.termsandconditions) {
+      if (prefs.hasSeenOnboarding &&!prefs.hasSeenTermsAndConditions && location != AppRoutes.termsandconditions) {
         return AppRoutes.termsandconditions;
-      }
-
-      final criticalPages = [
-        AppRoutes.home,
-        AppRoutes.chat,
-        AppRoutes.settings,
-        AppRoutes.editProfile,
-        AppRoutes.addUser,
-        AppRoutes.conversation
-      ];
-
-      if (hasInternet && !isLoggedIn && criticalPages.contains(location)) {
-        return AppRoutes.login;
-      }
-
-      if (!hasInternet && location == AppRoutes.login) {
-        return AppRoutes.home;
       }
 
       return null;
@@ -144,7 +120,12 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.sending, 
         pageBuilder: (context, state) {
-          return state.slide(child: const SendingPage());
+          final args = state.extra as Map<String, dynamic>;
+          return state.slide(
+            child: SendingPage(
+              deviceName: args[Keys.deviceNameKey],
+            )
+          );
         },
       ),
       GoRoute(
@@ -183,7 +164,19 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.conversation, 
         pageBuilder: (context, state) {
-          return state.slide(child: const ConversationPage());
+          final args = state.extra as Map<String, dynamic>;
+          return state.slide(
+            child: ConversationPage(
+              deviceId: args[Keys.deviceIdKey],
+              deviceName: args[Keys.deviceNameKey],
+            )
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.history, 
+        pageBuilder: (context, state) {
+          return state.slide(child: const HistoryPage());
         },
       ),
     ]

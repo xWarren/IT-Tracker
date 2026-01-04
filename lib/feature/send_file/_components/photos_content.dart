@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -8,9 +9,14 @@ import '../../../core/resources/colors.dart';
 
 class PhotosContent extends StatefulWidget {
 
-  const PhotosContent({super.key, required this.photosCallBack});
+  const PhotosContent({
+    super.key, 
+    required this.photosCallBack,
+    required this.onPhotosSelected
+  });
 
   final Function(bool isSelected) photosCallBack;
+  final Function(List<File> files) onPhotosSelected;
 
   @override
   State<PhotosContent> createState() => _PhotosContentState();
@@ -71,7 +77,7 @@ class _PhotosContentState extends State<PhotosContent> {
     log("Loaded images: ${images.length}");
   }
 
-  void _toggleSelection(AssetEntity asset) {
+  void _toggleSelection(AssetEntity asset) async {
     setState(() {
       if (selectedIds.contains(asset.id)) {
         selectedIds.remove(asset.id);
@@ -85,6 +91,14 @@ class _PhotosContentState extends State<PhotosContent> {
     } else {
        widget.photosCallBack(true);
     }
+
+    final selectedAssets = images.where((img) => selectedIds.contains(img.id)).toList();
+    final files = <File>[];
+    for (var asset in selectedAssets) {
+      final file = await asset.file;
+      if (file != null) files.add(file);
+    }
+    widget.onPhotosSelected(files);
   }
 
   @override

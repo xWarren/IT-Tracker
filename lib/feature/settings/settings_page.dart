@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/common/common_icon_button.dart';
@@ -7,8 +8,9 @@ import '../../core/resources/colors.dart';
 import '../../core/resources/dimensions.dart';
 import '../../core/utils/context_extension.dart';
 import '../../core/utils/device_info_util.dart';
+import '../edit_profile/bloc/get_profile/get_profile_bloc.dart';
 import '_components/general_card.dart';
-import '_components/logout_card.dart';
+// import '_components/logout_card.dart';
 import '_components/profile_card.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -26,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadDeviceInfo();
+    _getProfile();
   }
 
   Future<void> _loadDeviceInfo() async {
@@ -34,6 +37,8 @@ class _SettingsPageState extends State<SettingsPage> {
       deviceName = name;
     });
   }
+
+  void _getProfile() => context.read<GetProfileBloc>().add(DoGetProfileEvent());
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: [
                           ProfileCard(deviceName: deviceName ?? ""),
                           const GeneralCard(),
-                          const LogoutCard(),
+                          // const LogoutCard(),
                           const Text(
                             "Version 1.0.0",
                             style: TextStyle(

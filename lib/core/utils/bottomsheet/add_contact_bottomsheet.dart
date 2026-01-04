@@ -126,7 +126,7 @@ class _AddContactBottomsheetState extends State<AddContactBottomsheet> {
                 )
               ],
             ),
-            SizedBox(height: context.sreenBottom),
+            SizedBox(height: context.screenBottom),
           ],
         ),
       ),

@@ -17,6 +17,6 @@ class SetupProfileBloc extends Bloc<SetupProfileEvent, SetupProfileState> {
   void _doSetupProfile(DoSetupProfileEvent event, Emitter<SetupProfileState> emit) {
     _sharedPreferencesManager.setProfilePicture(event.profilePicture);
     _sharedPreferencesManager.setName(event.name);
-    _sharedPreferencesManager.setPhoneNumebr(event.phoneNumber);
+    _sharedPreferencesManager.setPhoneNumber(event.phoneNumber);
   }
 }

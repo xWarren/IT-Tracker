@@ -1,152 +1,167 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-import '../../../core/common/common_divider.dart';
+import 'package:flutter/material.dart';
+import 'package:nearby_service/nearby_service.dart';
+
 import '../../../core/common/common_elevated_button.dart';
 import '../../../core/common/common_image.dart';
 import '../../../core/resources/assets.dart';
 import '../../../core/resources/colors.dart';
 import '../../../core/resources/dimensions.dart';
 import '../../../core/utils/context_extension.dart';
-import '../../sending/_components/add_contact_card.dart';
+// import '../../sending/_components/add_contact_card.dart';
 
-class ReceivingContent extends StatefulWidget {
-  const ReceivingContent({super.key});
+class ReceivingContent extends StatelessWidget {
 
-  @override
-  State<ReceivingContent> createState() => _ReceivingContentState();
-}
+  const ReceivingContent({
+    super.key, 
+    required this.stopDiscover,
+    required this.progress,
+    required this.filesInfo,
+    required this.deviceName
+  });
 
-class _ReceivingContentState extends State<ReceivingContent> {
+  final VoidCallback stopDiscover;
+  final double progress;
+  final List<NearbyFileInfo> filesInfo;
+  final String deviceName;
 
-  double progress = 0.0;
 
-  @override
-  void initState() {
-    super.initState();
-    _startDownloading();
-  }
-
-  void _startDownloading() {
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (progress >= 1.0) return false;
-
-      setState(() {
-        progress += 0.05;
-      });
-      return true;
-    });
-  }
-
-  
   @override
   Widget build(BuildContext context) {
+    return _ReceivingView(
+      progress: progress, 
+      filesInfo: filesInfo,
+      deviceName: deviceName,
+      stopDiscover: stopDiscover
+    );
+  }
+}
+
+
+class _ReceivingView extends StatelessWidget {
+  final double progress;
+  final List<NearbyFileInfo> filesInfo;
+  final String deviceName;
+  final VoidCallback stopDiscover;
+
+  const _ReceivingView({
+    required this.progress, 
+    required this.filesInfo,
+    required this.deviceName,
+    required this.stopDiscover
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    log("Asdhasdhas ${filesInfo.length}");
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: Dimensions.spacingMedium),
+
           const Center(
             child: Text(
               "Receiving",
               style: TextStyle(
                 color: CustomColors.black,
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const Center(
+
+          Center(
             child: Text(
-              "from Zenki",
-              style: TextStyle(
+              "from $deviceName",
+              style: const TextStyle(
                 color: CustomColors.gray,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400
+                fontSize: 14,
               ),
             ),
           ),
+
           const SizedBox(height: Dimensions.spacingSmall),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingMedium),
             child: ListView.separated(
               shrinkWrap: true,
-              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
+              itemCount: filesInfo.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSmall),
-                  child: Row(
-                    spacing: Dimensions.spacingSmall,
-                    children: [
-                      const CommonImage(
-                        path: Assets.logo2,
-                        height: 46.0,
-                        width: 46.0,
-                        radius: 99.0,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Facebook",
-                                  style: TextStyle(
-                                    color: CustomColors.primary,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w500
-                                  ),
+                final item = filesInfo[index];
+                return Row(
+                  children: [
+                    const CommonImage(
+                      path: Assets.logo2,
+                      height: 46,
+                      width: 46,
+                      radius: 99,
+                    ),
+                    const SizedBox(width: Dimensions.spacingSmall),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                item.name,
+                                style: const TextStyle(
+                                  color: CustomColors.primary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                Text(
-                                  "${(progress * 100).toInt()} %",
-                                  style: const TextStyle(
-                                    color: CustomColors.primary,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w500
-                                  ),
+                              ),
+                              Text(
+                                "${(progress * 100).toInt()}%",
+                                style: const TextStyle(
+                                  color: CustomColors.primary,
+                                  fontSize: 12,
                                 ),
-                              ],
+                              ),
+                            ],
+                          ),
+                          LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 6,
+                            backgroundColor:
+                                CustomColors.gray.withValues(alpha: 0.2),
+                            valueColor: const AlwaysStoppedAnimation(
+                              CustomColors.tertiary,
                             ),
-                            LinearProgressIndicator(
-                              value: progress,
-                              minHeight: 6,
-                              backgroundColor: CustomColors.gray.withValues(alpha: 0.2),
-                              valueColor: const AlwaysStoppedAnimation(CustomColors.tertiary),
-                              borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radiusMedium),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 );
               },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 0,
-                  child: CommonDivider(),
-                );
-              },
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
             ),
           ),
+
           const SizedBox(height: Dimensions.spacingMedium),
-          const AddContactCard(),
+          // const AddContactCard(),
           const SizedBox(height: Dimensions.spacingMedium),
+
           Container(
-            height: 50.0,
+            height: 50,
             width: context.screenWidth,
             margin: const EdgeInsets.symmetric(
               horizontal: Dimensions.marginMedium,
-              vertical: Dimensions.marginLarge
+              vertical: Dimensions.marginLarge,
             ),
             child: CommonElevatedButton(
-              onButtonPressed: (progress * 100).toInt() == 100 ? () {} : null ,
+              onButtonPressed: progress == 1.0 ? stopDiscover : null,
               text: "Continue",
-              borderRadius: BorderRadiusGeometry.circular(Dimensions.radiusLarge),
+              borderRadius:
+                  BorderRadius.circular(Dimensions.radiusLarge),
             ),
           ),
         ],

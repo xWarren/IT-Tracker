@@ -18,7 +18,7 @@ class GeneralCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ConnectivityCubit, ConnectivityState>(
       builder: (context, state) {
-        final hasInternet = state is ConnectivityLoaded && state.isConnected;
+        // final hasInternet = state is ConnectivityLoaded && state.isConnected;
 
         return Container(
           width: context.screenWidth,
@@ -42,26 +42,24 @@ class GeneralCard extends StatelessWidget {
                 onButtonPressed: () => context.push(AppRoutes.editProfile), 
                 image: Assets.userEdit, 
                 title: "Edit Profile",
-                hasInternet: hasInternet
               ),
               _buildPage(
-                onButtonPressed: () {}, 
+                onButtonPressed: () => context.push(AppRoutes.history), 
                 image: Assets.clock, 
                 title: "History",
-                hasInternet: hasInternet
               ),
-              _buildPage(
-                onButtonPressed: () {}, 
-                image: Assets.notification, 
-                title: "Notifications",
-                hasInternet: hasInternet
-              ),
-              _buildPage(
-                onButtonPressed: () {}, 
-                image: Assets.about, 
-                title: "About App",
-                hasInternet: hasInternet
-              ),
+              // _buildPage(
+              //   onButtonPressed: () {}, 
+              //   image: Assets.notification, 
+              //   title: "Notifications",
+              //   hasInternet: hasInternet
+              // ),
+              // _buildPage(
+              //   onButtonPressed: () {}, 
+              //   image: Assets.about, 
+              //   title: "About App",
+              //   hasInternet: hasInternet
+              // ),
               const SizedBox(height: Dimensions.spacingSmall),
             ],
           ),
@@ -74,11 +72,10 @@ class GeneralCard extends StatelessWidget {
     required VoidCallback onButtonPressed,
     required String image,
     required String title,
-    required bool hasInternet
   }) {
     return CommonElevatedButton(
-      onButtonPressed: hasInternet ? onButtonPressed : () {},
-      overlayColor: hasInternet ? CustomColors.primary : Colors.transparent,
+      onButtonPressed: onButtonPressed,
+      overlayColor: Colors.transparent,
       backgroundColor: Colors.transparent,
       padding: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,
